@@ -210,19 +210,22 @@
         {
             if (CGRectContainsPoint([[buttons objectAtIndex:i] boundingBox], pos))
             {
-                
-                for(int i=0; i<(int)[buttons count]; i++) {
-                    [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
-                }
-                
                 if (i==0)
                 {
+                    for(int i=0; i<(int)[buttons count]; i++) {
+                        [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
+                    }
+					
                     [MGWU logEvent:@"classicmodeplayed"];
                     [self cleanupSprites];
                     [[CCDirector sharedDirector] replaceScene: [LevelSelectLayer scene: 0]];
                 }
                 else if (i==1)
                 {
+                    for(int i=0; i<(int)[buttons count]; i++) {
+                        [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
+                    }
+					
                     [MGWU logEvent:@"endlessmodeplayed"];
                     [self cleanupSprites];
                     [[CCDirector sharedDirector] replaceScene: [LevelLayer scene:100]];
@@ -232,6 +235,10 @@
                 }
                 else if (i==3)
                 {
+                    for(int i=0; i<(int)[buttons count]; i++) {
+                        [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
+                    }
+					
                     [self cleanupSprites];
                     [[CCDirector sharedDirector] replaceScene: [HighScoreLayer scene]];
                 }

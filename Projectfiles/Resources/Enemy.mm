@@ -79,7 +79,7 @@
                 hitPoints = 2.0f;
                 initHitPoints = 2.0f;
                 healthbar = [HealthbarComponent makeHealthbar];
-                healthbar.anchorPoint = ccp(.5,1);
+                healthbar.anchorPoint = ccp(-.1,-4);
                 [self addChild:healthbar];
                 break;
             
@@ -89,7 +89,7 @@
                 hitPoints = 3.0f;
                 initHitPoints = 3.0f;
                 healthbar = [HealthbarComponent makeHealthbar];
-                healthbar.anchorPoint = ccp(.5,1);
+                healthbar.anchorPoint = ccp(-.1,-4);
                 [self addChild:healthbar];
                 break;
                 
@@ -99,7 +99,7 @@
                 hitPoints = 25.0f;
                 initHitPoints = 25.0f;
                 healthbar = [HealthbarComponent makeHealthbar];
-                healthbar.anchorPoint = ccp(.5,1);
+                healthbar.anchorPoint = ccp(-.3,-8);
                 [self addChild:healthbar];
                 break;
 
