@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>introBallLevel</key>
+	<true/>
+	<key>enemies</key>
+	<array>
+		<dict>
+			<key>spawnTime</key>
+			<string>0</string>
+			<key>enemyType</key>
+			<string>0</string>
+		</dict>
+		<dict>
+			<key>spawnTime</key>
+			<integer>10</integer>
+			<key>enemyType</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>maxBallValue</key>
+	<integer>0</integer>
+</dict>
+</plist>
