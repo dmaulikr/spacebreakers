@@ -18,8 +18,6 @@
 
 @implementation PauseMenuLayer
 
-@synthesize myLevel;
-
 int myLevel;
 
 +(id) scene: (int)level
@@ -42,7 +40,7 @@ int myLevel;
         //background
         CCSprite *background;
         if (windowWidth > 500) {
-            background = [CCSprite spriteWithFile:@"pause_sreen-iphone5.png"];
+            background = [CCSprite spriteWithFile:@"pause_ip5.png"];
         }
         else {
             background = [CCSprite spriteWithFile:@"background_pause.png"];
@@ -102,7 +100,6 @@ int myLevel;
         [button2 runAction:restartButtonAnimation];
         [self addChild:button2 z:0];
         [buttons addObject: button2];
-        
         //Load the plist
         [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"main_menu_button.plist"];
         //Load in the spritesheet

@@ -29,8 +29,6 @@
 
 @implementation LevelLayer
 
-@synthesize myLevel;
-
 int level;
 
 static LevelLayer* instanceOfLevelLayer;
@@ -61,7 +59,6 @@ static LevelLayer* instanceOfLevelLayer;
         windowWidth = screenBound.height;
         windowHeight = screenBound.width;
         
-        self.myLevel = level;
         
         //background
         CCSprite *background;
@@ -80,9 +77,7 @@ static LevelLayer* instanceOfLevelLayer;
         instanceOfLevelLayer = self;
         
         platformWidth = PLATFORM_WIDTH_ORIGINAL;
-        
-        //CCLOG(@"%@ init", NSStringFromClass([self class]));
-        
+                
 		glClearColor(0.1f, 0.0f, 0.2f, 1.0f);
         
         paintballs = [[NSMutableArray alloc] init];
@@ -167,9 +162,7 @@ static LevelLayer* instanceOfLevelLayer;
         //Detect accelerations
         theMotion = [[CMMotionManager alloc] init];
         [theMotion startAccelerometerUpdates];
-//        
-//      [self preloadParticleEffects:@"fx-explosion.plist"];
-//		[self preloadParticleEffects:@"fx-explosion2.plist"];
+
 		// Preload sound effects
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"explosion1.wav"]; //ship gets hit
 		[[SimpleAudioEngine sharedEngine] preloadEffect:@"explo2.wav"]; //boss explodes
@@ -180,7 +173,6 @@ static LevelLayer* instanceOfLevelLayer;
         
         
         //Begin level-specific code
-        //NSLog(@"This is level %i",level);
         if(level <= 99)
         {
             [self initLevel];
@@ -227,9 +219,6 @@ static LevelLayer* instanceOfLevelLayer;
                 else {
                     instructions = [NSString stringWithFormat:@"Tap anywhere to start level."];
                 }
-                
-                //NSString* instructions = [NSString stringWithFormat:@"instructions_level%i.png",level];
-                //instructionsSprite = [CCSprite spriteWithFile:instructions];
                 instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:30];
                 tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start level."
                                                                 fontName:@"SquareFont" fontSize:24];
@@ -238,8 +227,6 @@ static LevelLayer* instanceOfLevelLayer;
                 [self addChild: tapToBeginLabel z:-1];
             }
             instructionsLabelBegin.color = ccWHITE;
-            //instructionsSprite.position = ccp(windowWidth/2, windowHeight/2);
-            //[self addChild:instructionsSprite z:-1];
             instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
             [self addChild:instructionsLabelBegin z:-1];
             
@@ -247,9 +234,6 @@ static LevelLayer* instanceOfLevelLayer;
         }
         else
         {
-//            instructionsSprite = [CCSprite spriteWithFile:@"instructions_endless.png"];
-//            instructionsSprite.position = ccp(windowWidth/2, windowHeight/2);
-//            [self addChild:instructionsSprite z:-1];
             maxBallValue = [NSNumber numberWithInt:8];
             introBallLevel = NO;
             ongoingInstructions = true;
@@ -480,27 +464,6 @@ static LevelLayer* instanceOfLevelLayer;
         
         paintballCount++;
     }
-//    else if (key == 1) {
-//        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"red_orb_new.plist"];
-//        CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"red_orb_new.png"];
-//        
-//        [self addChild:spriteSheet];
-//        redOrbFrames = [NSMutableArray array];
-//        
-//        for(int i = 1; i <= 4; ++i)
-//        {
-//            [redOrbFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"frame_%d.png", i]]];
-//        }
-//        
-//        CCSprite* orb = [CCSprite spriteWithSpriteFrameName:@"frame_1.png"];
-//        
-//        flaming = [CCAnimation animationWithSpriteFrames: redOrbFrames delay:0.5f];
-//        flaming.restoreOriginalFrame = NO;
-//        
-//        redOrbAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flaming]];
-//        [self runAction:redOrbAnimation];
-//
-//    }
 }
 
 -(void) unmorphPaddle
@@ -610,6 +573,13 @@ static LevelLayer* instanceOfLevelLayer;
                             normalSpeedTime = 0.0f;
                         }
                         numLives--;
+                        CCParticleSystem* system = [CCParticleSystemQuad particleWithFile:@"explosion_small.plist"];
+                        [[SimpleAudioEngine sharedEngine] playEffect:@"shipexplosion.wav" pitch:1.0f pan:0.0f gain:1.0f];
+                        // Set some parameters that can't be set in Particle Designer
+                        system.positionType = kCCPositionTypeFree;
+                        system.autoRemoveOnFinish = YES;
+                        system.position = platform.position;
+                        [self addChild:system];
                         if (numLives==0)
                         {
                             [theMotion stopAccelerometerUpdates];
@@ -633,17 +603,7 @@ static LevelLayer* instanceOfLevelLayer;
                     else if (paintball.code == 3 && !laserIsActive)
                     {
                         [self removePlatformChildren];
-//                        laser = [CCSprite spriteWithFile:@"lightsaber_large.png"];
-//                        if ([self isRetina]) 
-//                        {
-//                            laser.anchorPoint = ccp(12.5,1.1);
-//                        }
-//                        else 
-//                        {
-//                            laser.anchorPoint = ccp(5.8,.55);
-//                        }
-//                        [platform addChild:laser z:10];
-                        
+                       
                         CGPoint pos = platform.position;
                         [self removeChild:platform];
                         platform = [CCSprite spriteWithFile:@"paddleShip_laserfinal.png"];
@@ -700,32 +660,9 @@ static LevelLayer* instanceOfLevelLayer;
                         [platform runAction:shipNormalAnimation];
                         [self addChild:platform z:0];
                         
-                        //Load the plist
-//                        CGPoint pos = platform.position;
-//                        [self removeChild:platform];
-//                        platform = [CCSprite spriteWithFile:@"paddleShip_stickyshield.png"];
-//                        platform.anchorPoint = ccp(0.5,0);
-//                        platform.position = pos;
-//                        [self addChild:platform z:0];
-                        
                         sticky = true;
                         turnUnsticky = totaltime + 15.0f;
                         
-                        
-//                        [self removePlatformChildren];
-//                        honey = [CCSprite spriteWithFile:@"honey_paddle.png"];
-//                        if ([self isRetina])
-//                        {
-//                            honey.anchorPoint = ccp(6.3,11.5);
-//                        }
-//                        else
-//                        {
-//                            honey.anchorPoint = ccp(3,5.7);
-//                        }
-//                        [platform addChild:honey z:1];
-//                        honey.position = CGPointMake(self.parent.anchorPointInPoints.x, self.parent.anchorPointInPoints.y);
-//                        sticky = true;
-//                        turnUnsticky = totaltime + 15.0f;
                     }
                     else if (paintball.code == 7)
                     {
@@ -744,20 +681,6 @@ static LevelLayer* instanceOfLevelLayer;
                         
                         hasGun = true;
                         numShot = 0;
-                        
-                        
-//                        gun = [CCSprite spriteWithFile:@"blaster_gun.png"];
-//                        if ([self isRetina])
-//                        {
-//                            gun.anchorPoint = ccp(6.4,8.2);
-//                        }
-//                        else
-//                        {
-//                            gun.anchorPoint = ccp(3.1,4.4);
-//                        }
-//                        [platform addChild:gun z:1];
-//                        gun.position = CGPointMake(self.parent.anchorPointInPoints.x, self.parent.anchorPointInPoints.y);
-                        
                     }
                 }
             }

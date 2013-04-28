@@ -154,12 +154,12 @@
 		CCParticleSystem* system;
 		if (type == EnemyTypeBoss)
 		{
-			system = [CCParticleSystemQuad particleWithFile:@"fx-explosion2.plist"];
+			system = [CCParticleSystemQuad particleWithFile:@"explosion.plist"];
 			[[SimpleAudioEngine sharedEngine] playEffect:@"explo2.wav" pitch:1.0f pan:0.0f gain:1.0f];
 		}
 		else
 		{
-			system = [CCParticleSystemQuad particleWithFile:@"fx-explosion.plist"];
+			system = [CCParticleSystemQuad particleWithFile:@"explosion.plist"];
 			[[SimpleAudioEngine sharedEngine] playEffect:@"shipexplosion.wav" pitch:1.0f pan:0.0f gain:1.0f];
 		}
 		

@@ -16,7 +16,7 @@
 #else
 	CCLOG(@"ARC is either not available or not enabled");
 #endif
-    [MGWU loadMGWU:@"katiesiegel5"];
+    [MGWU loadMGWU:@"mvd4c1mvd4c1"];
     [MGWU preFacebook];
     [MGWU dark];
 }

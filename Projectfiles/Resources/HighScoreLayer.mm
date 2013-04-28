@@ -41,7 +41,7 @@
         }
 
         background.anchorPoint = ccp(0,1);
-        background.position = CGPointMake(0, 320);
+        background.position = CGPointMake(0, windowHeight);
         [self addChild:background z:-10];
         
         
@@ -50,7 +50,7 @@
         
         
         CCLabelTTF* tapLabel = [CCLabelTTF labelWithString:@"Tap anywhere to return to menu." fontName:@"SquareFont" fontSize:18];
-        tapLabel.position = ccp(240,30);
+        tapLabel.position = ccp(windowWidth/2,30);
         tapLabel.color = ccWHITE;
         [self addChild:tapLabel];
         
@@ -59,17 +59,17 @@
     return self;
 }
 
-- (void)receivedScores:(NSArray*)scoreArray
+- (void)receivedScores:(NSDictionary*)scores
 {
 	CCLabelTTF* scoreLabel;
-    if (scoreArray == nil)
+    if (scores == nil)
     {
         CCLabelTTF* noConnection = [CCLabelTTF labelWithString: @"No internet connection." fontName: @"SquareFont" fontSize: 18];
-        noConnection.position = ccp(240,300);
+        noConnection.position = ccp(windowWidth/2,300);
         noConnection.color = ccWHITE;
         [self addChild: noConnection];
         noConnection = [CCLabelTTF labelWithString: @"Cannot display leaderboard." fontName: @"SquareFont" fontSize: 18];
-        noConnection.position = ccp(240, 260);
+        noConnection.position = ccp(windowWidth/2, 260);
         noConnection.color = ccWHITE;
         [self addChild: noConnection];
         
@@ -80,7 +80,7 @@
         scoreLabel = [CCLabelTTF labelWithString:score 
                                                     fontName:@"SquareFont" 
                                                     fontSize:24];
-        scoreLabel.position = ccp(240,160);//director.screenCenter;
+        scoreLabel.position = ccp(windowWidth/2,160);//director.screenCenter;
         scoreLabel.color = ccWHITE;
         [self addChild:scoreLabel];
     }
@@ -89,14 +89,16 @@
         scoreLabel = [CCLabelTTF labelWithString:@"High Scores" 
                                         fontName:@"SquareFont" 
                                         fontSize:24];
-        scoreLabel.position = ccp(240,280);
+        scoreLabel.position = ccp(windowWidth/2,280);
         scoreLabel.color = ccWHITE;
         [self addChild:scoreLabel];
         
-        CCSprite* theBoard = [CCSprite spriteWithFile: @"highscores.png"];
-        theBoard.position = ccp(240,180);
-        [self addChild:theBoard z:-1];
+//        CCSprite* theBoard = [CCSprite spriteWithFile: @"highscores.png"];
+//        theBoard.position = ccp(windowWidth/2,180);
+//        [self addChild:theBoard z:-1];
         
+        NSArray* scoreArray = [scores objectForKey: @"all"];
+                
         CCLabelTTF* aScore;
         for (int i = 1; i <= 10; i++)
         {
@@ -108,13 +110,12 @@
                 int score = [s intValue];
                 
                 //Do something with name and score
-                aScore = [CCLabelTTF labelWithString: [NSString stringWithFormat:@"%i.  %@             %i",i,name,score] fontName: @"SquareFont" fontSize: 18];
+                aScore = [CCLabelTTF labelWithString: [NSString stringWithFormat:@"%i.  %@             %i",i,name,score] fontName: @"Verdana" fontSize: 18];
                 aScore.position = ccp(240,275 - (20*i));
                 aScore.color = ccWHITE;
                 [self addChild:aScore];
             }
-        }
-    }
+        }    }
     
 }
 
@@ -124,8 +125,6 @@
     KKInput* input = [KKInput sharedInput];
     if (input.anyTouchBeganThisFrame)
     {
-        //CGPoint pos = [input locationOfAnyTouchInPhase:KKTouchPhaseAny];
-        //if(pos.x > x1 && pos.x < x2 && pos.y > y1 && pos.y < y2) 
         {
             [[CCDirector sharedDirector] replaceScene: [MenuLayer scene]];
         }

@@ -20,15 +20,11 @@
     NSMutableArray *mainMenuButtonFrames;
     
     NSMutableArray *buttons;
-    
-    int myLevel;
-    
+        
     float windowWidth;
     float windowHeight;
     
 }
-
-@property (readwrite, nonatomic) int myLevel;
 
 +(id) scene: (int)level;
 -(void) onExit;

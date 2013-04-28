@@ -16,7 +16,6 @@
 {
 	
     
-    int myLevel;
     
     float windowWidth;
     float windowHeight;
@@ -33,9 +32,7 @@
     Enemy *shooter;
     NSMutableArray *paintballs;
     NSMutableArray *shooters;
-    
-    //EnemyGroup* shooters;
-    
+        
     ccTime totaltime;
     ccTime realTime;
     float second;
@@ -52,7 +49,6 @@
     ccTime turnBack;
     float platformWidth;
     bool laserIsActive;
-    //CCSprite *instructionsSprite;
     CCLabelTTF* instructionsLabel;
     CCLabelTTF* instructionsLabelBegin;
     CCLabelTTF* tapToBeginLabel;
@@ -95,9 +91,6 @@
 
     CCSprite *topBarHS;
 }
-
-@property (readwrite, nonatomic) int myLevel;
-//@property (readwrite, nonatomic) NSMutableArray* paintballs;
 
 +(LevelLayer*) sharedLevelLayer;
 +(id) scene: (int) levelLayer;
