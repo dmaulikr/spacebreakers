@@ -133,7 +133,12 @@ static LevelLayer* instanceOfLevelLayer;
         
         
         //Top bar code
-        topBarHS = [CCSprite spriteWithFile:@"highscoreframe.png"];
+        if (level == 100) {
+            topBarHS = [CCSprite spriteWithFile:@"highscoreframe_long.png"];
+        }
+        else {
+            topBarHS = [CCSprite spriteWithFile:@"highscoreframe.png"];
+        }
         topBarHS.anchorPoint = ccp(1,1);
         topBarHS.position = CGPointMake(windowWidth, windowHeight);
         [self addChild:topBarHS z:-2];
@@ -143,7 +148,12 @@ static LevelLayer* instanceOfLevelLayer;
         topBarEnemies.position = CGPointMake(windowWidth, windowHeight-[topBarHS boundingBox].size.height);
         [self addChild:topBarEnemies z:-2];
         
-        CCSprite *topBarLevel = [CCSprite spriteWithFile:@"levelframe.png"];
+        if (level == 100) {
+            topBarLevel = [CCSprite spriteWithFile:@"emptylevel.png"];
+        }
+        else {
+            topBarLevel = [CCSprite spriteWithFile:@"levelframe.png"];
+        }
         topBarLevel.anchorPoint = ccp(0,1);
         topBarLevel.position = CGPointMake(0, windowHeight);
         [self addChild:topBarLevel z:-2];
@@ -265,8 +275,8 @@ static LevelLayer* instanceOfLevelLayer;
             scoreLabel = [CCLabelTTF labelWithString:score 
                                             fontName:@"SquareFont" 
                                             fontSize:18];
-            scoreLabel.anchorPoint = ccp(.5,1);
-            scoreLabel.position = ccp(windowWidth/3,windowHeight);//director.screenCenter;
+            scoreLabel.anchorPoint = ccp(1,1);
+            scoreLabel.position = ccp(windowWidth-10,windowHeight-8);//director.screenCenter;
             scoreLabel.color = ccWHITE;
             [self addChild:scoreLabel z:-1];
         }
@@ -359,7 +369,7 @@ static LevelLayer* instanceOfLevelLayer;
                                    fontName:@"SquareFont"
                                    fontSize:18];
     liveLabel.anchorPoint = ccp(.5,.5);
-    liveLabel.position = CGPointMake([topBarHS boundingBox].size.width/2,windowHeight-[topBarHS boundingBox].size.height*1.6);
+    liveLabel.position = CGPointMake([topBarLevel boundingBox].size.width/2,windowHeight-[topBarLevel boundingBox].size.height*1.6);
     liveLabel.color = ccWHITE;
     [self addChild:liveLabel z:-1];
 }
@@ -374,8 +384,8 @@ static LevelLayer* instanceOfLevelLayer;
     pointLabel = [CCLabelTTF labelWithString:currPoints 
                                     fontName:@"SquareFont" 
                                     fontSize:18];
-    pointLabel.anchorPoint = ccp(.5,1);
-    pointLabel.position = ccp(windowWidth/3*2,windowHeight);
+    pointLabel.anchorPoint = ccp(0,1);
+    pointLabel.position = ccp(0+10,windowHeight-8);
     pointLabel.color = ccWHITE;
     [self addChild:pointLabel z:-1];
     
@@ -386,8 +396,8 @@ static LevelLayer* instanceOfLevelLayer;
         scoreLabel = [CCLabelTTF labelWithString:theNewHighScore 
                                         fontName:@"SquareFont" 
                                         fontSize:18];
-        scoreLabel.anchorPoint = ccp(.5,1);
-        scoreLabel.position = ccp(windowWidth/3,windowHeight);//director.screenCenter;
+        scoreLabel.anchorPoint = ccp(1,1);
+        scoreLabel.position = ccp(windowWidth-10,windowHeight-8);//director.screenCenter;
         scoreLabel.color = ccWHITE;
         [self addChild:scoreLabel z:-1];
     }
@@ -691,7 +701,7 @@ static LevelLayer* instanceOfLevelLayer;
         //check if a paintball has collided with an alien
         for(int j = [shooters count]-1; j >=0 ; j--)
         {
-            if([paintballs count] > n)
+            if((int)[paintballs count] > n)
             {
                 NSInteger first = n;
                 NSInteger secondOne = j;
@@ -1024,12 +1034,13 @@ static LevelLayer* instanceOfLevelLayer;
                 [self removePlatformChildren];
             }
         }
-        else if(!paused && [shooters count] == 1 && [enemies count] == 0 && level%NUM_LEVELS_PER_STAGE!=0 && level != 100)
+        else if(!paused && [shooters count] == 1 && [enemies count] == 0 && level%12!=0 && level != 100)
         {
             //"Tap to kill"
             shooter = [shooters objectAtIndex:0];
-            if (pos.x > shooter.position.x - (shooter.width) && pos.x < shooter.position.x + (shooter.width) &&
-                pos.y > shooter.position.y - (shooter.height) && pos.y < shooter.position.y + (shooter.height)) 
+            CGRect shooterBound = [shooter boundingBox];
+            if (pos.x > shooter.position.x - (shooterBound.size.width/2) && pos.x < shooter.position.x + (shooterBound.size.width/2) &&
+                pos.y > shooter.position.y - (shooterBound.size.height/2) && pos.y < shooter.position.y + (shooterBound.size.height/2))
             {
                 shooter.hitPoints = 1;
                 [shooter gotHit];
@@ -1095,7 +1106,7 @@ static LevelLayer* instanceOfLevelLayer;
         
         
         //Move the shooters.
-        for(int i=0; i<[shooters count]; i++)
+        for(int i=0; i<(int)[shooters count]; i++)
         {
             NSInteger j = i;
             shooter = [shooters objectAtIndex:j];

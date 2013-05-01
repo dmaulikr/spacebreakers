@@ -153,7 +153,7 @@ int myLevel;
     if (input.anyTouchBeganThisFrame)
     {
         CGPoint pos = [input locationOfAnyTouchInPhase:KKTouchPhaseAny];
-        for(int i=0; i<[buttons count]; i++)
+        for(int i=0; i<(int)[buttons count]; i++)
         {
             if (CGRectContainsPoint([[buttons objectAtIndex:i] boundingBox], pos))
             {
