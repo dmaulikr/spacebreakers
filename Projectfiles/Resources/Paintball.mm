@@ -8,6 +8,8 @@
 
 #import "Paintball.h"
 #import "LevelLayer.h"
+#import "SimpleAudioEngine.h"
+
 
 @interface Paintball (PrivateMethods)
 -(id) initWithType: (BallTypes) balltype;
@@ -135,6 +137,8 @@
         angle = reboundAngle;
         isFalling = false;
         hasHitPaddle = true;
+        [[SimpleAudioEngine sharedEngine] playEffect:@"paddle_hit.mp3" pitch:1.0f pan:0.0f gain:1.0f];
+
     }
 }
 

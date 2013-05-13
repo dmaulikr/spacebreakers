@@ -85,7 +85,7 @@ int myPage;
     theLabel.position = pos;
     theLabel.position=pos;
     theLabel.color = ccWHITE;
-    [self addChild:theLabel z:2];
+    [self addChild:theLabel z:1];
 }
 
 -(void) drawOther
@@ -107,9 +107,19 @@ int myPage;
             CCSprite *tile = [CCSprite spriteWithFile:@"tile_idle.png"];
             tile.anchorPoint = ccp(.5,.5);
             tile.position = labelLoc;
+            if(levelKey > currentLevelProgress)
+            {
+                CCSprite * lock = [CCSprite spriteWithFile:@"lock.png"];
+                lock.position = labelLoc;
+                lock.opacity = 200.0f;
+                [self addChild:lock z:2];
+            }
+            else
+            {
+                [self drawLabel:label atPosition:labelLoc];
+            }
             [self addChild: tile z:0];
             [buttons insertObject:tile atIndex:(levelKey-1)];
-            [self drawLabel:label atPosition:labelLoc];
             index++;
         }
     }
@@ -124,7 +134,7 @@ int myPage;
         for (int i=0; i<(int)[buttons count]; i++)
         {
             if ([buttons objectAtIndex:i] != nil &&
-                CGRectContainsPoint([[buttons objectAtIndex:i] boundingBox], pos) && selectedLevel != i+1)
+                CGRectContainsPoint([[buttons objectAtIndex:i] boundingBox], pos) && selectedLevel != i+1 && (i+1) <= currentLevelProgress)
             {
                 CCSprite *theButton = [buttons objectAtIndex:i];
                 selectedButton.position = theButton.position;
