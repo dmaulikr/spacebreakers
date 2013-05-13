@@ -182,6 +182,9 @@ static LevelLayer* instanceOfLevelLayer;
 		[[SimpleAudioEngine sharedEngine] preloadEffect:@"hit1.wav"]; //spaceship gets hit
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"plus_life.wav"];
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"shipexplosion.wav"]; //spaceship explodes
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"paddle_hit.mp3"]; //green ball hits paddle
+        
+        [[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"LLS - Obsidian Mirror.mp3" loop:YES];
         
         
         
