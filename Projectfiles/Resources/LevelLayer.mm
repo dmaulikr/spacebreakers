@@ -304,7 +304,7 @@ static LevelLayer* instanceOfLevelLayer;
                                                         fontName:@"SquareFont" 
                                                         fontSize:21];
             levelLabel.anchorPoint = ccp(.5,.5);
-            levelLabel.position = ccp([topBarHS boundingBox].size.width*7/10,windowHeight-[topBarHS boundingBox].size.height*.6);
+            levelLabel.position = ccp([topBarLevel boundingBox].size.width*7/10,windowHeight-[topBarLevel boundingBox].size.height*.6);
             levelLabel.color = ccWHITE;
             [self addChild:levelLabel z:-1];
         }
@@ -721,13 +721,15 @@ static LevelLayer* instanceOfLevelLayer;
                         [self addChild:platform z:0];
                         
                         
-                        
-                        CCLabelTTF * tapToShoot = [CCLabelTTF labelWithString:@"Gun Powerup Activated! Tap to Shoot!"
-                                           fontName:@"SquareFont" fontSize:22];
-                        tapToShoot.color = ccRED;
-                        tapToShoot.position = ccp(windowWidth/2, windowHeight/3 + 20.0f);
-                        [self addChild: tapToShoot z:3];
-                        [tapToShoot runAction:[CCFadeOut actionWithDuration:5.0f]];
+                        if (level != 11)
+                        {
+                            CCLabelTTF * tapToShoot = [CCLabelTTF labelWithString:@"Gun Powerup Activated! Tap to Shoot!"
+                                               fontName:@"SquareFont" fontSize:22];
+                            tapToShoot.color = ccRED;
+                            tapToShoot.position = ccp(windowWidth/2, windowHeight/3 + 20.0f);
+                            [self addChild: tapToShoot z:3];
+                            [tapToShoot runAction:[CCFadeOut actionWithDuration:5.0f]];
+                        }
                         
                         hasGun = true;
                         numShot = 0;
