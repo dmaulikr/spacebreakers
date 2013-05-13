@@ -4,7 +4,7 @@
 <dict>
 	<key>frames</key>
 	<dict>
-		<key>butt_frame_1.png</key>
+		<key>mainmenu_classicmode_button_1.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{0,0},{380,52}}</string>
@@ -17,7 +17,7 @@
 			<key>sourceSize</key>
 			<string>{380,52}</string>
 		</dict>
-		<key>butt_frame_2.png</key>
+		<key>mainmenu_classicmode_button_2.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{0,52},{380,52}}</string>
@@ -30,7 +30,7 @@
 			<key>sourceSize</key>
 			<string>{380,52}</string>
 		</dict>
-		<key>butt_frame_3.png</key>
+		<key>mainmenu_classicmode_button_3.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{0,104},{380,52}}</string>
@@ -43,7 +43,7 @@
 			<key>sourceSize</key>
 			<string>{380,52}</string>
 		</dict>
-		<key>butt_frame_4.png</key>
+		<key>mainmenu_classicmode_button_4.png</key>
 		<dict>
 			<key>frame</key>
 			<string>{{0,52},{380,52}}</string>

@@ -87,10 +87,10 @@
     for(int i = 1; i <= 4; ++i)
     {
         [classicButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"butt_frame_%d.png", i]]];
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_classicmode_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"butt_frame_1.png"];
+    CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"mainmenu_classicmode_button_1.png"];
     button.anchorPoint = ccp(.5,.5);
     button.position = CGPointMake(windowWidth/2, 180.0f);
     //Create an animation from the set of frames you created earlier
@@ -111,10 +111,10 @@
     for(int i = 1; i <= 4; ++i)
     {
         [endlessButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"butt_frame_%d.png", i]]];
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_endlessmode_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"butt_frame_1.png"];
+    CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_endlessmode_button_1.png"];
     button2.anchorPoint = ccp(.5,.5);
     button2.position = CGPointMake(windowWidth/2, 145.0f);
     //Create an animation from the set of frames you created earlier
@@ -135,10 +135,10 @@
     for(int i = 1; i <= 4; ++i)
     {
         [aboutButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"butt_frame_%d.png", i]]];
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_about_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button3 = [CCSprite spriteWithSpriteFrameName:@"butt_frame_1.png"];
+    CCSprite* button3 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_about_button_1.png"];
     button3.anchorPoint = ccp(.5,.5);
     button3.position = CGPointMake(windowWidth/2, 110.0f);
     //Create an animation from the set of frames you created earlier
@@ -159,10 +159,10 @@
     for(int i = 1; i <= 4; ++i)
     {
         [highScoresButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"butt_frame_%d.png", i]]];
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_highscores_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button4 = [CCSprite spriteWithSpriteFrameName:@"butt_frame_1.png"];
+    CCSprite* button4 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_highscores_button_1.png"];
     button4.anchorPoint = ccp(.5,.5);
     button4.position = CGPointMake(windowWidth/2, 75.0f);
     //Create an animation from the set of frames you created earlier
@@ -182,10 +182,10 @@
     for(int i = 1; i <= 4; ++i)
     {
         [moreGamesButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"butt_frame_%d.png", i]]];
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_moregames_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button5 = [CCSprite spriteWithSpriteFrameName:@"butt_frame_1.png"];
+    CCSprite* button5 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_moregames_button_1.png"];
     button5.anchorPoint = ccp(.5,.5);
     button5.position = CGPointMake(windowWidth/2, 40.0f);
     //Create an animation from the set of frames you created earlier
