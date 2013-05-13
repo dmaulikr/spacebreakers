@@ -154,7 +154,17 @@ int oldLevel;
                 scoreLabel.color = ccWHITE;
                 [self addChild:scoreLabel z:-1];
                 
-                [self promptUserToEnterName];
+                NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"playerName"];
+                if(name != nil)
+                {
+                    
+                    [MGWU submitHighScore:score byPlayer:name forLeaderboard:@"endless"];
+
+                }
+                else
+                {
+                    [self promptUserToEnterName];
+                }
             }
             else
             {
@@ -185,6 +195,7 @@ int oldLevel;
     passwordField.font = [UIFont systemFontOfSize:18];
     passwordField.backgroundColor = [UIColor whiteColor];
     passwordField.keyboardAppearance = UIKeyboardAppearanceAlert;
+    passwordField.autocorrectionType = UITextAutocorrectionTypeNo;
     passwordField.delegate = (id) self;
     [passwordField becomeFirstResponder];
     [nameAlert addSubview:passwordField];
@@ -201,6 +212,7 @@ int oldLevel;
 {
     if (buttonIndex == 1) {
         [MGWU submitHighScore:score byPlayer:username forLeaderboard:@"endless"];
+        [[NSUserDefaults standardUserDefaults] setObject:username forKey:@"playerName"];
     }
 }
 

@@ -53,6 +53,7 @@
     CCLabelTTF* instructionsLabelBegin;
     CCLabelTTF* tapToBeginLabel;
     CCSprite *topBarLevel;
+    CCSprite *topBarEnemies;
     
     int paintballCount;
     bool ongoingInstructions;

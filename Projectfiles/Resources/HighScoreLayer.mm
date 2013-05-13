@@ -50,7 +50,7 @@
         
         
         CCLabelTTF* tapLabel = [CCLabelTTF labelWithString:@"Tap anywhere to return to menu." fontName:@"SquareFont" fontSize:18];
-        tapLabel.position = ccp(windowWidth/2,30);
+        tapLabel.position = ccp(windowWidth/2,15);
         tapLabel.color = ccWHITE;
         [self addChild:tapLabel];
         
@@ -115,7 +115,22 @@
                 aScore.color = ccWHITE;
                 [self addChild:aScore];
             }
-        }    }
+        }
+        
+        NSDictionary *user = [scores objectForKey:@"user"];
+        NSString *name = [user objectForKey:@"name"];
+        NSNumber *s = [user objectForKey:@"score"];
+        int score = [s intValue];
+        
+        NSNumber *r = [user objectForKey:@"rank"];
+        int rank = [r intValue];
+        
+        //Do something with name and score
+        aScore = [CCLabelTTF labelWithString: [NSString stringWithFormat:@"# %i.  %@ (you)         %i",rank,name,score] fontName: @"Verdana" fontSize: 18];
+        aScore.position = ccp(windowWidth/2,40);
+        aScore.color = ccWHITE;
+        [self addChild:aScore];
+    }
     
 }
 

@@ -30,6 +30,7 @@
 @implementation LevelLayer
 
 int level;
+int enemieskilled;
 
 static LevelLayer* instanceOfLevelLayer;
 +(LevelLayer*) sharedLevelLayer
@@ -134,18 +135,20 @@ static LevelLayer* instanceOfLevelLayer;
         
         //Top bar code
         if (level == 100) {
-            topBarHS = [CCSprite spriteWithFile:@"highscoreframe_long.png"];
-        }
-        else {
             topBarHS = [CCSprite spriteWithFile:@"highscoreframe.png"];
+            topBarHS.anchorPoint = ccp(1,1);
+            topBarHS.position = CGPointMake(windowWidth, windowHeight);
+            [self addChild:topBarHS z:-2];
         }
-        topBarHS.anchorPoint = ccp(1,1);
-        topBarHS.position = CGPointMake(windowWidth, windowHeight);
-        [self addChild:topBarHS z:-2];
         
-        CCSprite *topBarEnemies = [CCSprite spriteWithFile:@"enemyframe_solo.png"];
+        
+        topBarEnemies = [CCSprite spriteWithFile:@"enemyframe_solo.png"];
         topBarEnemies.anchorPoint = ccp(1,1);
-        topBarEnemies.position = CGPointMake(windowWidth, windowHeight-[topBarHS boundingBox].size.height);
+        if (level == 100)
+        {topBarEnemies.position = CGPointMake(windowWidth, windowHeight-[topBarHS boundingBox].size.height);}
+        else
+        {topBarEnemies.position = CGPointMake(windowWidth, windowHeight);}
+        
         [self addChild:topBarEnemies z:-2];
         
         if (level == 100) {
@@ -166,7 +169,7 @@ static LevelLayer* instanceOfLevelLayer;
         pauseplay = [CCSprite spriteWithFile:@"pause.png"];
         pauseplay.anchorPoint = ccp(0,1);
         pauseplay.position = CGPointMake(0,windowHeight-[topBarLevel boundingBox].size.height-
-                                         [topBarLives boundingBox].size.height);
+                                         [topBarLives boundingBox].size.height - 3.0f); //the extra 3 pixels evens the spacing
         [self addChild:pauseplay z:-2];
         
         //Detect accelerations
@@ -231,8 +234,8 @@ static LevelLayer* instanceOfLevelLayer;
                 }
                 instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:30];
                 tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start level."
-                                                                fontName:@"SquareFont" fontSize:24];
-                tapToBeginLabel.color = ccWHITE;
+                                                                fontName:@"SquareFont" fontSize:22];
+                tapToBeginLabel.color = ccRED;
                 tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
                 [self addChild: tapToBeginLabel z:-1];
             }
@@ -251,6 +254,15 @@ static LevelLayer* instanceOfLevelLayer;
                                                               fontName:@"SquareFont" fontSize:30];
             instructionsLabelBegin.color = ccWHITE;
             instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
+            enemieskilled = 0;
+            
+            tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start."
+                                                 fontName:@"SquareFont" fontSize:22];
+            tapToBeginLabel.color = ccRED;
+            tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
+            [self addChild: tapToBeginLabel z:-1];
+            
+            [self updateNumEnemiesLeft]; // this will display the # of enemies killed, 0 at start
             [self addChild:instructionsLabelBegin z:-1];
         }
         
@@ -270,7 +282,7 @@ static LevelLayer* instanceOfLevelLayer;
             //High Score
             NSNumber *currentHighScore = [[NSUserDefaults standardUserDefaults] objectForKey:@"highScore"];
             currHigh = [currentHighScore intValue];
-            NSString* score = [NSString stringWithFormat:@"High Score: %i",currHigh];
+            NSString* score = [NSString stringWithFormat:@"Best: %i",currHigh];
             
             scoreLabel = [CCLabelTTF labelWithString:score 
                                             fontName:@"SquareFont" 
@@ -352,10 +364,7 @@ static LevelLayer* instanceOfLevelLayer;
     [shooter unscheduleUpdate];
     [self removeChild:shooter cleanup:YES];
     [shooters removeObjectAtIndex:index];
-    if (level !=100) 
-    {
-        [self updateNumEnemiesLeft];
-    }
+    [self updateNumEnemiesLeft];
 }
 
 -(void) updateNumLives
@@ -392,7 +401,7 @@ static LevelLayer* instanceOfLevelLayer;
     if(points > currHigh)
     {
         [self removeChild:scoreLabel cleanup:YES];
-        NSString *theNewHighScore = [NSString stringWithFormat:@"High Score: %i",points];
+        NSString *theNewHighScore = [NSString stringWithFormat:@"BEST: %i",points];
         scoreLabel = [CCLabelTTF labelWithString:theNewHighScore 
                                         fontName:@"SquareFont" 
                                         fontSize:18];
@@ -405,15 +414,33 @@ static LevelLayer* instanceOfLevelLayer;
 
 -(void) updateNumEnemiesLeft
 {
-    if (enemyLabel != nil) 
+    if(level == 100)
     {
-        [self removeChild:enemyLabel cleanup:YES];
+        if (enemyLabel != nil)
+        {
+            [self removeChild:enemyLabel cleanup:YES];
+        }
+        NSString* numEnemiesLeft = [NSString stringWithFormat:@"%i",enemieskilled];
+        enemyLabel = [CCLabelTTF labelWithString:numEnemiesLeft fontName:@"SquareFont" fontSize:18];
+        enemyLabel.anchorPoint = ccp(0.5,0.5);
+        enemyLabel.position = CGPointMake(windowWidth - [topBarHS boundingBox].size.width/6, windowHeight-[topBarHS boundingBox].size.height*1.6);
+        [self addChild:enemyLabel z:-1];
+        enemieskilled++;
     }
-    NSString* numEnemiesLeft = [NSString stringWithFormat:@"%i",([enemies count] + [shooters count])];
-    enemyLabel = [CCLabelTTF labelWithString:numEnemiesLeft fontName:@"SquareFont" fontSize:18];
-    enemyLabel.anchorPoint = ccp(0.5,0.5);
-    enemyLabel.position = CGPointMake(windowWidth - [topBarHS boundingBox].size.width/6, windowHeight-[topBarHS boundingBox].size.height*1.6);
-    [self addChild:enemyLabel z:-1];
+    else
+    {
+        if (enemyLabel != nil)
+        {
+            [self removeChild:enemyLabel cleanup:YES];
+        }
+        NSString* numEnemiesLeft = [NSString stringWithFormat:@"%i",([enemies count] + [shooters count])];
+        enemyLabel = [CCLabelTTF labelWithString:numEnemiesLeft fontName:@"SquareFont" fontSize:18];
+        enemyLabel.anchorPoint = ccp(0.5,0.5);
+        enemyLabel.position = CGPointMake(windowWidth - [topBarEnemies boundingBox].size.width/5, windowHeight-[topBarEnemies boundingBox].size.height*0.6);
+        //enemyLabel.position = CGPointMake(windowWidth - [topBarHS boundingBox].size.width/6, windowHeight - [topBarHS boundingBox].size.height*0.6);
+        [self addChild:enemyLabel z:-1];
+    }
+    
 }
 
 -(void) initPaintball: (Enemy*)mySprite
@@ -551,8 +578,9 @@ static LevelLayer* instanceOfLevelLayer;
                 {
                     if(level == 100)
                     {
-                        points+=10; //points for bouncing the green ball
-                        [self updatePointsLabel];
+                        //NOT SURE WHY THIS IS HERE, COMMENTED OUT
+                        //points+=10; //points for bouncing the green ball
+                        //[self updatePointsLabel];
                     }
                     if(!sticky || stickyBall)
                     {
@@ -689,6 +717,15 @@ static LevelLayer* instanceOfLevelLayer;
                         platform.position = pos;
                         [self addChild:platform z:0];
                         
+                        
+                        
+                        CCLabelTTF * tapToShoot = [CCLabelTTF labelWithString:@"Gun Powerup Activated! Tap to Shoot!"
+                                           fontName:@"SquareFont" fontSize:22];
+                        tapToShoot.color = ccRED;
+                        tapToShoot.position = ccp(windowWidth/2, windowHeight/3 + 20.0f);
+                        [self addChild: tapToShoot z:3];
+                        [tapToShoot runAction:[CCFadeOut actionWithDuration:5.0f]];
+                        
                         hasGun = true;
                         numShot = 0;
                     }
@@ -795,11 +832,12 @@ static LevelLayer* instanceOfLevelLayer;
         if ([[shooter children] count] < 2)
         {
             //Tap to explode mode
-            CCLabelTTF* explodeLabel = [CCLabelTTF labelWithString:@"Last alien--" fontName:@"SquareFont" fontSize:16];
+            CCLabelTTF* explodeLabel = [CCLabelTTF labelWithString:@"Last alien" fontName:@"SquareFont" fontSize:16];
             explodeLabel.anchorPoint = ccp(0,1);
             [shooter addChild:explodeLabel];
-            CCLabelTTF* explodeLabel2 = [CCLabelTTF labelWithString:@"tap to explode!" fontName:@"SquareFont" fontSize:16];
+            CCLabelTTF* explodeLabel2 = [CCLabelTTF labelWithString:@"TAP TO EXPLODE!!" fontName:@"SquareFont" fontSize:16];
             explodeLabel2.anchorPoint = ccp(0.2,2.1);
+            [explodeLabel2 setColor:ccc3(255,1,1)];
             [shooter addChild:explodeLabel2];
         }
     }
@@ -1039,6 +1077,8 @@ static LevelLayer* instanceOfLevelLayer;
             //"Tap to kill"
             shooter = [shooters objectAtIndex:0];
             CGRect shooterBound = [shooter boundingBox];
+            //increasing bounding box size to make tapping to kill easier
+            shooterBound = CGRectMake(shooterBound.origin.x, shooterBound.origin.y, shooterBound.size.width + 40.0f, shooterBound.size.height + 40.0f);
             if (pos.x > shooter.position.x - (shooterBound.size.width/2) && pos.x < shooter.position.x + (shooterBound.size.width/2) &&
                 pos.y > shooter.position.y - (shooterBound.size.height/2) && pos.y < shooter.position.y + (shooterBound.size.height/2))
             {
