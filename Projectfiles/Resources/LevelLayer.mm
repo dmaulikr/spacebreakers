@@ -21,6 +21,7 @@
 #define PLATFORM_HEIGHT 14.0f
 #define PLATFORM_SPEED_ORIGINAL 20
 #define NUM_LEVELS_PER_STAGE    12
+#define FONT_SIZE_LEVEL_INFO   26
 
 
 @interface LevelLayer (PrivateMethods)
@@ -235,7 +236,7 @@ static LevelLayer* instanceOfLevelLayer;
                 else {
                     instructions = [NSString stringWithFormat:@"Tap anywhere to start level."];
                 }
-                instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:30];
+                instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
                 tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start level."
                                                                 fontName:@"SquareFont" fontSize:22];
                 tapToBeginLabel.color = ccRED;
@@ -254,7 +255,7 @@ static LevelLayer* instanceOfLevelLayer;
             introBallLevel = NO;
             ongoingInstructions = true;
             instructionsLabelBegin = [CCLabelTTF labelWithString:@"Forgot the rules?\nTip: try classic mode!"
-                                                              fontName:@"SquareFont" fontSize:30];
+                                                              fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
             instructionsLabelBegin.color = ccWHITE;
             instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
             enemieskilled = 0;
@@ -802,7 +803,7 @@ static LevelLayer* instanceOfLevelLayer;
                     {
                         youWon = [CCLabelTTF labelWithString:@"Congratulations!" 
                                                     fontName:@"SquareFont"
-                                                    fontSize:30];
+                                                    fontSize:FONT_SIZE_LEVEL_INFO];
                         youWon.position = ccp(windowWidth/2,windowHeight*3/4);
                         youWon.color = ccGREEN;
                         [self addChild:youWon z:20];
