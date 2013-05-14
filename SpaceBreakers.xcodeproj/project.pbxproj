@@ -2156,6 +2156,7 @@
 					"$(KKFRAMEWORKS_IOS)",
 					"-lsqlite3.0",
 				);
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2172,6 +2173,7 @@
 					"$(KKFRAMEWORKS_IOS)",
 					"-lsqlite3.0",
 				);
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
