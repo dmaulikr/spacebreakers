@@ -626,7 +626,11 @@ static LevelLayer* instanceOfLevelLayer;
                         {
                             [theMotion stopAccelerometerUpdates];
                             
-                            //[MGWU logEvent:[NSString stringWithFormat:@"level%ifailed",level]];
+							if (level == 100)
+								[MGWU logEvent:@"endlessmodeplayed"];
+							else
+								[MGWU logEvent:@"levelfailed" withParams:@{@"level":[NSNumber numberWithInt:level]}];
+							
                             [[CCDirector sharedDirector] replaceScene: [GameOverLayer scene: points: level]];
                         }
                         else
@@ -868,7 +872,7 @@ static LevelLayer* instanceOfLevelLayer;
 
 -(void) changeLevel
 {
-    //[MGWU logEvent:[NSString stringWithFormat:@"level%ipassed",level]];
+    [MGWU logEvent:@"levelpassed" withParams:@{@"level":[NSNumber numberWithInt:level]}];
     [[CCDirector sharedDirector] replaceScene: [LevelLayer scene: (level+1)]];
 }
 

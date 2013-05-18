@@ -216,7 +216,7 @@
                         [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
                     }
 					
-                    [MGWU logEvent:@"classicmodeplayed"];
+                    [MGWU logEvent:@"classicmodetapped"];
                     [self cleanupSprites];
                     [[CCDirector sharedDirector] replaceScene: [LevelSelectLayer scene: 0]];
                 }
@@ -226,7 +226,7 @@
                         [self removeChild: [buttons objectAtIndex: i] cleanup: YES];
                     }
 					
-                    [MGWU logEvent:@"endlessmodeplayed"];
+                    [MGWU logEvent:@"endlessmodetapped"];
                     [self cleanupSprites];
                     [[CCDirector sharedDirector] replaceScene: [LevelLayer scene:100]];
                 }

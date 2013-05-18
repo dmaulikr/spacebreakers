@@ -96,11 +96,11 @@
 //        CCSprite* theBoard = [CCSprite spriteWithFile: @"highscores.png"];
 //        theBoard.position = ccp(windowWidth/2,180);
 //        [self addChild:theBoard z:-1];
-        
+
         NSArray* scoreArray = [scores objectForKey: @"all"];
                 
         CCLabelTTF* aScore;
-        for (int i = 1; i <= 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             if (i < (int)[scoreArray count])
             {
@@ -110,8 +110,8 @@
                 int score = [s intValue];
                 
                 //Do something with name and score
-                aScore = [CCLabelTTF labelWithString: [NSString stringWithFormat:@"%i.  %@             %i",i,name,score] fontName: @"Verdana" fontSize: 18];
-                aScore.position = ccp(240,275 - (20*i));
+                aScore = [CCLabelTTF labelWithString: [NSString stringWithFormat:@"%i.  %@             %i",i+1,name,score] fontName: @"Verdana" fontSize: 18];
+                aScore.position = ccp(240,275 - (20*(i+1)));
                 aScore.color = ccWHITE;
                 [self addChild:aScore];
             }
