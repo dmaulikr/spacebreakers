@@ -1,6 +1,6 @@
 //
 //  PauseMenuLayer.m
-//  SpaceBounce
+//  SpaceBreakers
 //
 //  Created by Kathryn Siegel on 1/27/13.
 //

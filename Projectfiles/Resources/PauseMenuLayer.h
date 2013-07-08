@@ -1,6 +1,6 @@
 //
 //  PauseMenuLayer.h
-//  SpaceBounce
+//  SpaceBreakers
 //
 //  Created by Kathryn Siegel on 1/27/13.
 //
@@ -23,7 +23,6 @@
         
     float windowWidth;
     float windowHeight;
-    
 }
 
 +(id) scene: (int)level;

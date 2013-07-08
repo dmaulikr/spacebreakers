@@ -1,9 +1,9 @@
 //
 //  LevelLayer.m
-//  FirstGame
+//  SpaceBreakers
 //
 //  Created by Katie Siegel on 6/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. All rights reserved.
 //
 
 #import "LevelLayer.h"
@@ -13,7 +13,6 @@
 #import "LevelSelectLayer.h"
 #import "PauseMenuLayer.h"
 #import <mgwuSDK/MGWU.h>
-//#import "math.h"
 
 #define PAUSEPLAYBUTTON_WIDTH   72.0f
 #define PAUSEPLAYBUTTON_HEIGHT  63.0f
@@ -61,262 +60,38 @@ static LevelLayer* instanceOfLevelLayer;
         windowWidth = screenBound.height;
         windowHeight = screenBound.width;
         
-        
-        //background
-        CCSprite *background;
-        if (windowWidth > 500) {
-            background = [CCSprite spriteWithFile:@"gamescreen_gamespace-iphone5.png"];
-        }
-        else {
-            background = [CCSprite spriteWithFile:@"game_space.png"];
-        }
-        background.anchorPoint = ccp(0,1);
-        background.position = CGPointMake(0, windowHeight);
-        [self addChild:background z:-10];
-        
         [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
         
         instanceOfLevelLayer = self;
-        
-        platformWidth = PLATFORM_WIDTH_ORIGINAL;
-                
+            
 		glClearColor(0.1f, 0.0f, 0.2f, 1.0f);
         
-        paintballs = [[NSMutableArray alloc] init];
-        shooters = [[NSMutableArray alloc] init];
-        spawntime = [self getSpawnTime];
-        paused = false;
-        numLives = 3;
-        points = 0;
-        isMorphedWide = false;
-        isMorphedSkinny = false;
-        turnBack = 0.0f;
-        laserIsActive = false;
-        paintballCount = 0;
-        enemyCount = 0;
-        sticky = false;
-        stickyBall = false;
-        turnUnsticky = 0.0f;
-        platformSpeed = PLATFORM_SPEED_ORIGINAL;
-        normalSpeedTime = 0.0f;
-        invincible = false;
-        
-        maxPListLevel = 40;
-        
-        realTime = 0.0f;
-
-        
-        //THE PLATFORM
-
-        //Load the plist
-        CCSpriteFrameCache* spriteFrameCache = [ CCSpriteFrameCache sharedSpriteFrameCache ];
-        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"ship_normal.plist"];
-        //Load in the spritesheet
-        CCSpriteBatchNode *shipNormalSheet = [CCSpriteBatchNode batchNodeWithFile:@"ship_normal.png"];
-        [self addChild:shipNormalSheet];
-        shipNormalFrames = [NSMutableArray array];
-        for(int i = 1; i <= 3; ++i)
-        {
-            CCSpriteFrame* frame = [ spriteFrameCache spriteFrameByName: [ NSString stringWithFormat:@"paddleShip_normal%d.png", i ] ];
-            [ shipNormalFrames addObject:frame ];
-        }
-        //Initialize with the first frame loaded from the spritesheet
-        platform = [CCSprite spriteWithSpriteFrameName:@"paddleShip_normal1.png"];
-        platform.anchorPoint = ccp(0.5,0);
-        platform.position = CGPointMake(windowWidth/2,0);
-        //Create an animation from the set of frames you created earlier
-        CCAnimation* shipNormal = [CCAnimation animationWithSpriteFrames: shipNormalFrames delay:0.2f];
-        shipNormal.restoreOriginalFrame = NO;
-        //Create an action with the animation that can then be assigned to a sprite
-        shipNormalAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:shipNormal]];
-        [platform runAction:shipNormalAnimation];
-        [self addChild:platform z:0];
-        shipFrame = 1;
-        
-        
-        //Top bar code
-        if (level == 100) {
-            topBarHS = [CCSprite spriteWithFile:@"highscoreframe.png"];
-            topBarHS.anchorPoint = ccp(1,1);
-            topBarHS.position = CGPointMake(windowWidth, windowHeight);
-            [self addChild:topBarHS z:-2];
-        }
-        
-        
-        topBarEnemies = [CCSprite spriteWithFile:@"enemyframe_solo.png"];
-        topBarEnemies.anchorPoint = ccp(1,1);
-        if (level == 100)
-        {topBarEnemies.position = CGPointMake(windowWidth, windowHeight-[topBarHS boundingBox].size.height);}
-        else
-        {topBarEnemies.position = CGPointMake(windowWidth, windowHeight);}
-        
-        [self addChild:topBarEnemies z:-2];
-        
-        if (level == 100) {
-            topBarLevel = [CCSprite spriteWithFile:@"emptylevel.png"];
-        }
-        else {
-            topBarLevel = [CCSprite spriteWithFile:@"levelframe.png"];
-        }
-        topBarLevel.anchorPoint = ccp(0,1);
-        topBarLevel.position = CGPointMake(0, windowHeight);
-        [self addChild:topBarLevel z:-2];
-        
-        CCSprite *topBarLives = [CCSprite spriteWithFile:@"livesframe_solo.png"];
-        topBarLives.anchorPoint = ccp(0,1);
-        topBarLives.position = CGPointMake(0, windowHeight-[topBarLevel boundingBox].size.height);
-        [self addChild:topBarLives z:-2];
-
-        pauseplay = [CCSprite spriteWithFile:@"pause.png"];
-        pauseplay.anchorPoint = ccp(0,1);
-        pauseplay.position = CGPointMake(0,windowHeight-[topBarLevel boundingBox].size.height-
-                                         [topBarLives boundingBox].size.height - 3.0f); //the extra 3 pixels evens the spacing
-        [self addChild:pauseplay z:-2];
+        [self initClassVariables];
+        [self initPaddleShip];//The platform ship
+        [self configureTopBar];
         
         //Detect accelerations
         theMotion = [[CMMotionManager alloc] init];
         [theMotion startAccelerometerUpdates];
 
-		// Preload sound effects
-        [[SimpleAudioEngine sharedEngine] preloadEffect:@"explosion1.wav"]; //ship gets hit
-		[[SimpleAudioEngine sharedEngine] preloadEffect:@"explo2.wav"]; //boss explodes
-		[[SimpleAudioEngine sharedEngine] preloadEffect:@"hit1.wav"]; //spaceship gets hit
-        [[SimpleAudioEngine sharedEngine] preloadEffect:@"plus_life.wav"];
-        [[SimpleAudioEngine sharedEngine] preloadEffect:@"shipexplosion.wav"]; //spaceship explodes
-        [[SimpleAudioEngine sharedEngine] preloadEffect:@"paddle_hit.mp3"]; //green ball hits paddle
+		[self preloadSoundEffects];
         
-        [[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"LLS - Obsidian Mirror.mp3" loop:YES];
-        
-        
-        
-        //Begin level-specific code
+        //Level-specific code
         if(level <= 99)
         {
-            [self initLevel];
-            ongoingInstructions = true;
-            if(level <= NUM_LEVELS_PER_STAGE*2)
-            {
-                NSString* instructions;
-                if (level == 1) {
-                    instructions = [NSString stringWithFormat:@"Tilt to move.\nBounce green balls back at enemies"];
-                }
-                else if (level == 2) {
-                    instructions = [NSString stringWithFormat:@"Avoid red balls or lose 1 life."];
-                }
-                else if (level == 3) {
-                    instructions = [NSString stringWithFormat:@"Health ball increases life count."];
-                }
-                else if (level == 4) {
-                    instructions = [NSString stringWithFormat:@"Some enemies must be hit twice."];
-                }
-                else if (level == 5) {
-                    instructions = [NSString stringWithFormat:@"Laser ball generates giant laser."];
-                }
-                else if (level == 6) {
-                    instructions = [NSString stringWithFormat:@"Hamburger ball makes ship wider."];
-                }
-                else if (level == 7) {
-                    instructions = [NSString stringWithFormat:@"Salad ball makes ship skinnier."];
-                }
-                else if (level == 8) {
-                    instructions = [NSString stringWithFormat:@"Honey ball makes paddle sticky.\nTap to launch stuck balls."];
-                }
-                else if (level == 9) {
-                    instructions = [NSString stringWithFormat:@"Turtle ball decreases ship speed."];
-                }
-                else if (level == 10) {
-                    instructions = [NSString stringWithFormat:@"Watch out for enemies with\nthree hit points!"];
-                }
-                else if (level == 11) {
-                    instructions = [NSString stringWithFormat:@"Blaster ball generates missile\nlauncher. Tap to shoot. Ammo: 3"];
-                }
-                else if (level == 12) {
-                    instructions = [NSString stringWithFormat:@"Boss level!"];
-                }
-                else {
-                    instructions = [NSString stringWithFormat:@"Tap anywhere to start level."];
-                }
-                instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
-                tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start level."
-                                                                fontName:@"SquareFont" fontSize:22];
-                tapToBeginLabel.color = ccRED;
-                tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
-                [self addChild: tapToBeginLabel z:-1];
-            }
-            instructionsLabelBegin.color = ccWHITE;
-            instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
-            [self addChild:instructionsLabelBegin z:-1];
-            
-            totalEnemies = level*2;
+            [self configureClassicModeLevel];
         }
         else
         {
-            maxBallValue = [NSNumber numberWithInt:8];
-            introBallLevel = NO;
-            ongoingInstructions = true;
-            instructionsLabelBegin = [CCLabelTTF labelWithString:@"Forgot the rules?\nTip: try classic mode!"
-                                                              fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
-            instructionsLabelBegin.color = ccWHITE;
-            instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
-            enemieskilled = 0;
-            
-            tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start."
-                                                 fontName:@"SquareFont" fontSize:22];
-            tapToBeginLabel.color = ccRED;
-            tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
-            [self addChild: tapToBeginLabel z:-1];
-            
-            [self updateNumEnemiesLeft]; // this will display the # of enemies killed, 0 at start
-            [self addChild:instructionsLabelBegin z:-1];
+            [self configureEndlessModeLevel];
         }
         
-        
-        //End level-specific code
-        
-        
-        
-        //Number of lives left;
-        [self updateNumLives];
-        
-        if(level == 100)
-        {
-            //Number of points
-            [self updatePointsLabel];
-            
-            //High Score
-            NSNumber *currentHighScore = [[NSUserDefaults standardUserDefaults] objectForKey:@"highScore"];
-            currHigh = [currentHighScore intValue];
-            NSString* score = [NSString stringWithFormat:@"Best: %i",currHigh];
-            
-            scoreLabel = [CCLabelTTF labelWithString:score 
-                                            fontName:@"SquareFont" 
-                                            fontSize:18];
-            scoreLabel.anchorPoint = ccp(1,1);
-            scoreLabel.position = ccp(windowWidth-10,windowHeight-8);//director.screenCenter;
-            scoreLabel.color = ccWHITE;
-            [self addChild:scoreLabel z:-1];
-        }
-        else
-        {
-            [self updateNumEnemiesLeft];
-                                        
-            NSString *currLevel = [NSString stringWithFormat:@"%i",level];
-            CCLabelTTF* levelLabel = [CCLabelTTF labelWithString:currLevel 
-                                                        fontName:@"SquareFont" 
-                                                        fontSize:21];
-            levelLabel.anchorPoint = ccp(.5,.5);
-            levelLabel.position = ccp([topBarLevel boundingBox].size.width*7/10,windowHeight-[topBarLevel boundingBox].size.height*.6);
-            levelLabel.color = ccWHITE;
-            [self addChild:levelLabel z:-1];
-        }
+        [self updateNumLives];//Number of lives left
 
-        
-        
         //schedules a call to the update method every frame
         [self scheduleUpdate];
 	}
-    
-	return self;
+    	return self;
 }
 
 -(void) initLevel
@@ -331,6 +106,233 @@ static LevelLayer* instanceOfLevelLayer;
     }
     introBallLevel = (Boolean)[[level1 objectForKey:@"introBallLevel"] boolValue];
     maxBallValue = [level1 objectForKey:@"maxBallValue"];
+}
+
+-(void) initPaddleShip
+{
+    //Load the plist
+    CCSpriteFrameCache* spriteFrameCache = [ CCSpriteFrameCache sharedSpriteFrameCache ];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"ship_normal.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *shipNormalSheet = [CCSpriteBatchNode batchNodeWithFile:@"ship_normal.png"];
+    [self addChild:shipNormalSheet];
+    shipNormalFrames = [NSMutableArray array];
+    for(int i = 1; i <= 3; ++i)
+    {
+        CCSpriteFrame* frame = [ spriteFrameCache spriteFrameByName: [ NSString stringWithFormat:@"paddleShip_normal%d.png", i ] ];
+        [ shipNormalFrames addObject:frame ];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    platform = [CCSprite spriteWithSpriteFrameName:@"paddleShip_normal1.png"];
+    platform.anchorPoint = ccp(0.5,0);
+    platform.position = CGPointMake(windowWidth/2,0);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation* shipNormal = [CCAnimation animationWithSpriteFrames: shipNormalFrames delay:0.2f];
+    shipNormal.restoreOriginalFrame = NO;
+    //Create an action with the animation that can then be assigned to a sprite
+    shipNormalAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:shipNormal]];
+    [platform runAction:shipNormalAnimation];
+    [self addChild:platform z:0];
+    shipFrame = 1;
+}
+
+-(void) initClassVariables
+{
+    platformWidth = PLATFORM_WIDTH_ORIGINAL;
+    paintballs = [[NSMutableArray alloc] init];
+    shooters = [[NSMutableArray alloc] init];
+    spawntime = [self getSpawnTime];
+    paused = false;
+    numLives = 3;
+    points = 0;
+    isMorphedWide = false;
+    isMorphedSkinny = false;
+    turnBack = 0.0f;
+    laserIsActive = false;
+    paintballCount = 0;
+    enemyCount = 0;
+    sticky = false;
+    stickyBall = false;
+    turnUnsticky = 0.0f;
+    platformSpeed = PLATFORM_SPEED_ORIGINAL;
+    normalSpeedTime = 0.0f;
+    invincible = false;
+    maxPListLevel = 40;
+    realTime = 0.0f;
+}
+
+-(void) createBackground
+{
+    //background
+    CCSprite *background;
+    if (windowWidth > 500) {
+        background = [CCSprite spriteWithFile:@"gamescreen_gamespace-iphone5.png"];
+    }
+    else {
+        background = [CCSprite spriteWithFile:@"game_space.png"];
+    }
+    background.anchorPoint = ccp(0,1);
+    background.position = CGPointMake(0, windowHeight);
+    [self addChild:background z:-10];
+}
+
+-(void) configureTopBar
+{
+    //Top bar alignment
+    if (level == 100) {
+        topBarHS = [CCSprite spriteWithFile:@"highscoreframe.png"];
+        topBarHS.anchorPoint = ccp(1,1);
+        topBarHS.position = CGPointMake(windowWidth, windowHeight);
+        [self addChild:topBarHS z:-2];
+    }
+    
+    topBarEnemies = [CCSprite spriteWithFile:@"enemyframe_solo.png"];
+    topBarEnemies.anchorPoint = ccp(1,1);
+    if (level == 100)
+    {topBarEnemies.position = CGPointMake(windowWidth, windowHeight-[topBarHS boundingBox].size.height);}
+    else
+    {topBarEnemies.position = CGPointMake(windowWidth, windowHeight);}
+    
+    [self addChild:topBarEnemies z:-2];
+    
+    if (level == 100) {
+        topBarLevel = [CCSprite spriteWithFile:@"emptylevel.png"];
+    }
+    else {
+        topBarLevel = [CCSprite spriteWithFile:@"levelframe.png"];
+    }
+    topBarLevel.anchorPoint = ccp(0,1);
+    topBarLevel.position = CGPointMake(0, windowHeight);
+    [self addChild:topBarLevel z:-2];
+    
+    CCSprite *topBarLives = [CCSprite spriteWithFile:@"livesframe_solo.png"];
+    topBarLives.anchorPoint = ccp(0,1);
+    topBarLives.position = CGPointMake(0, windowHeight-[topBarLevel boundingBox].size.height);
+    [self addChild:topBarLives z:-2];
+    
+    pauseplay = [CCSprite spriteWithFile:@"pause.png"];
+    pauseplay.anchorPoint = ccp(0,1);
+    pauseplay.position = CGPointMake(0,windowHeight-[topBarLevel boundingBox].size.height-
+                                     [topBarLives boundingBox].size.height - 3.0f); //the extra 3 pixels evens the spacing
+    [self addChild:pauseplay z:-2];
+}
+
+-(void) preloadSoundEffects
+{
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"explosion1.wav"]; //ship gets hit
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"explo2.wav"]; //boss explodes
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"hit1.wav"]; //spaceship gets hit
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"plus_life.wav"];
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"shipexplosion.wav"]; //spaceship explodes
+    [[SimpleAudioEngine sharedEngine] preloadEffect:@"paddle_hit.mp3"]; //green ball hits paddle
+    [[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"LLS - Obsidian Mirror.mp3" loop:YES];
+}
+
+-(void) configureClassicModeLevel
+{
+    [self initLevel];
+    ongoingInstructions = true;
+    if(level <= NUM_LEVELS_PER_STAGE*2)
+    {
+        NSString* instructions;
+        switch(level) {
+            case 1:
+                instructions = [NSString stringWithFormat:@"Tilt to move.\nBounce green balls back at enemies"];
+                break;
+            case 2:
+                instructions = [NSString stringWithFormat:@"Avoid red balls or lose 1 life."];
+                break;
+            case 3:
+                instructions = [NSString stringWithFormat:@"Health ball increases life count."];
+                break;
+            case 4:
+                instructions = [NSString stringWithFormat:@"Some enemies must be hit twice."];
+                break;
+            case 5:
+                instructions = [NSString stringWithFormat:@"Laser ball generates giant laser."];
+                break;
+            case 6:
+                instructions = [NSString stringWithFormat:@"Hamburger ball makes ship wider."];
+                break;
+            case 7:
+                instructions = [NSString stringWithFormat:@"Salad ball makes ship skinnier."];
+                break;
+            case 8:
+                instructions = [NSString stringWithFormat:@"Honey ball makes paddle sticky.\nTap to launch stuck balls."];
+                break;
+            case 9:
+                instructions = [NSString stringWithFormat:@"Turtle ball decreases ship speed."];
+                break;
+            case 10:
+                instructions = [NSString stringWithFormat:@"Watch out for enemies with\nthree hit points!"];
+                break;
+            case 11:
+                instructions = [NSString stringWithFormat:@"Blaster ball generates missile\nlauncher. Tap to shoot. Ammo: 3"];
+                break;
+            case 12:
+                instructions = [NSString stringWithFormat:@"Boss level!"];
+                break;
+            default:
+                instructions = [NSString stringWithFormat:@"Tap anywhere to start level."];
+                break;
+        }
+        instructionsLabelBegin = [CCLabelTTF labelWithString:instructions fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
+        tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start level."
+                                             fontName:@"SquareFont" fontSize:22];
+        tapToBeginLabel.color = ccRED;
+        tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
+        [self addChild: tapToBeginLabel z:-1];
+    }
+    instructionsLabelBegin.color = ccWHITE;
+    instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
+    [self addChild:instructionsLabelBegin z:-1];
+    totalEnemies = level*2;
+    [self updateNumEnemiesLeft];
+        NSString *currLevel = [NSString stringWithFormat:@"%i",level];
+    CCLabelTTF* levelLabel = [CCLabelTTF labelWithString:currLevel
+                                                fontName:@"SquareFont"
+                                                fontSize:21];
+    levelLabel.anchorPoint = ccp(.5,.5);
+    levelLabel.position = ccp([topBarLevel boundingBox].size.width*7/10,windowHeight-[topBarLevel boundingBox].size.height*.6);
+    levelLabel.color = ccWHITE;
+    [self addChild:levelLabel z:-1];
+}
+
+-(void) configureEndlessModeLevel
+{
+    maxBallValue = [NSNumber numberWithInt:8];
+    introBallLevel = NO;
+    ongoingInstructions = true;
+    instructionsLabelBegin = [CCLabelTTF labelWithString:@"Forgot the rules?\nTip: try classic mode!"
+                                                fontName:@"SquareFont" fontSize:FONT_SIZE_LEVEL_INFO];
+    instructionsLabelBegin.color = ccWHITE;
+    instructionsLabelBegin.position = ccp(windowWidth/2, windowHeight/2);
+    enemieskilled = 0;
+    
+    tapToBeginLabel = [CCLabelTTF labelWithString:@"Tap anywhere to start."
+                                         fontName:@"SquareFont" fontSize:22];
+    tapToBeginLabel.color = ccRED;
+    tapToBeginLabel.position = ccp(windowWidth/2, windowHeight/3);
+    [self addChild: tapToBeginLabel z:-1];
+    
+    [self updateNumEnemiesLeft]; // this will display the # of enemies killed, 0 at start
+    [self addChild:instructionsLabelBegin z:-1];
+    
+    //Number of points
+    [self updatePointsLabel];
+    
+    //High Score
+    NSNumber *currentHighScore = [[NSUserDefaults standardUserDefaults] objectForKey:@"highScore"];
+    currHigh = [currentHighScore intValue];
+    NSString* score = [NSString stringWithFormat:@"Best: %i",currHigh];
+    
+    scoreLabel = [CCLabelTTF labelWithString:score
+                                    fontName:@"SquareFont"
+                                    fontSize:18];
+    scoreLabel.anchorPoint = ccp(1,1);
+    scoreLabel.position = ccp(windowWidth-10,windowHeight-8);
+    scoreLabel.color = ccWHITE;
+    [self addChild:scoreLabel z:-1];
 }
 
 -(void) preloadParticleEffects:(NSString*)particleFile

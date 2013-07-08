@@ -1,9 +1,9 @@
 //
 //  Menu.m
-//  FirstGame
+//  SpaceBreakers
 //
 //  Created by Katie Siegel on 6/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. All rights reserved.
 //
 
 #import "MenuLayer.h"
@@ -63,69 +63,69 @@
     windowWidth = screenBound.height;
     windowHeight = screenBound.width;
     
-    //background
-    CCSprite *background;
-    if (windowWidth > 500) {
-        background = [CCSprite spriteWithFile:@"main_menu_screen-iphone5.png"];
-    }
-    else {
-        background = [CCSprite spriteWithFile:@"mainmenu_background.png"];
-    }
-
-    background.anchorPoint = ccp(.5,.5);
-    background.position = CGPointMake(windowWidth/2, windowHeight/2);
-    [self addChild:background z:-10];
-    
+    [self loadBackground];
     buttons = [NSMutableArray array];
     
-    //Load the plist
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_classicmode_button.plist"];
-    //Load in the spritesheet
-    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_classicmode_button.png"];
-    [self addChild:spriteSheet];
-    classicButtonFrames = [NSMutableArray array];
-    for(int i = 1; i <= 4; ++i)
-    {
-        [classicButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_classicmode_button_%d.png", i]]];
-    }
-    //Initialize with the first frame loaded from the spritesheet
-    CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"mainmenu_classicmode_button_1.png"];
-    button.anchorPoint = ccp(.5,.5);
-    button.position = CGPointMake(windowWidth/2, 180.0f);
-    //Create an animation from the set of frames you created earlier
-    CCAnimation *flashingButton = [CCAnimation animationWithSpriteFrames: classicButtonFrames delay:0.2f];
-    flashingButton.restoreOriginalFrame = NO;
-    //Create an action with the animation that can then be assigned to a sprite
-    classicButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton]];
-    [button runAction:classicButtonAnimation];
-    [self addChild:button z:0];
-    [buttons addObject: button];
+    [self loadClassicModeButton];
+    [self loadEndlessModeButton];
+    [self loadAboutButton];
+    [self schedule:@selector(checkForClicks:)];
+}
 
+-(void) loadMoreGamesButton
+{
     //Load the plist
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_endlessmode_button.plist"];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_moregames_button.plist"];
     //Load in the spritesheet
-    CCSpriteBatchNode *spriteSheet2 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_endlessmode_button.png"];
-    [self addChild:spriteSheet2];
-    endlessButtonFrames = [NSMutableArray array];
+    CCSpriteBatchNode *spriteSheet5 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_moregames_button.png"];
+    [self addChild:spriteSheet5];
+    moreGamesButtonFrames = [NSMutableArray array];
     for(int i = 1; i <= 4; ++i)
     {
-        [endlessButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_endlessmode_button_%d.png", i]]];
+        [moreGamesButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_moregames_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_endlessmode_button_1.png"];
-    button2.anchorPoint = ccp(.5,.5);
-    button2.position = CGPointMake(windowWidth/2, 145.0f);
+    CCSprite* button5 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_moregames_button_1.png"];
+    button5.anchorPoint = ccp(.5,.5);
+    button5.position = CGPointMake(windowWidth/2, 40.0f);
     //Create an animation from the set of frames you created earlier
-    CCAnimation* flashingButton2 = [CCAnimation animationWithSpriteFrames: endlessButtonFrames delay:0.2f];
-    flashingButton2.restoreOriginalFrame = NO;
+    CCAnimation* flashingButton5 = [CCAnimation animationWithSpriteFrames: moreGamesButtonFrames delay:0.2f];
     //Create an action with the animation that can then be assigned to a sprite
-    endlessButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton2]];
-    [button2 runAction:endlessButtonAnimation];
-    [self addChild:button2 z:0];
-    [buttons addObject: button2];
-    
+    moreGamesButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton5]];
+    [button5 runAction:moreGamesButtonAnimation];
+    [self addChild:button5 z:0];
+    [buttons addObject: button5];
+}
+
+-(void) loadHighScoresButton
+{
+    //Load the plist
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_highscores_button.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *spriteSheet4 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_highscores_button.png"];
+    [self addChild:spriteSheet4];
+    highScoresButtonFrames = [NSMutableArray array];
+    for(int i = 1; i <= 4; ++i)
+    {
+        [highScoresButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_highscores_button_%d.png", i]]];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    CCSprite* button4 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_highscores_button_1.png"];
+    button4.anchorPoint = ccp(.5,.5);
+    button4.position = CGPointMake(windowWidth/2, 75.0f);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation* flashingButton4 = [CCAnimation animationWithSpriteFrames: highScoresButtonFrames delay:0.2f];
+    //Create an action with the animation that can then be assigned to a sprite
+    highScoresButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton4]];
+    [button4 runAction:highScoresButtonAnimation];
+    [self addChild:button4 z:0];
+    [buttons addObject: button4];
+}
+
+-(void) loadAboutButton
+{
     //Load the plist
     [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_about_button.plist"];
     //Load in the spritesheet
@@ -149,54 +149,76 @@
     [button3 runAction:aboutButtonAnimation];
     [self addChild:button3 z:0];
     [buttons addObject: button3];
-    
-    //Load the plist
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_highscores_button.plist"];
-    //Load in the spritesheet
-    CCSpriteBatchNode *spriteSheet4 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_highscores_button.png"];
-    [self addChild:spriteSheet4];
-    highScoresButtonFrames = [NSMutableArray array];
-    for(int i = 1; i <= 4; ++i)
-    {
-        [highScoresButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_highscores_button_%d.png", i]]];
-    }
-    //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button4 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_highscores_button_1.png"];
-    button4.anchorPoint = ccp(.5,.5);
-    button4.position = CGPointMake(windowWidth/2, 75.0f);
-    //Create an animation from the set of frames you created earlier
-    CCAnimation* flashingButton4 = [CCAnimation animationWithSpriteFrames: highScoresButtonFrames delay:0.2f];
-    //Create an action with the animation that can then be assigned to a sprite
-    highScoresButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton4]];
-    [button4 runAction:highScoresButtonAnimation];
-    [self addChild:button4 z:0];
-    [buttons addObject: button4];
+}
 
+-(void) loadEndlessModeButton
+{
     //Load the plist
-    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_moregames_button.plist"];
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_endlessmode_button.plist"];
     //Load in the spritesheet
-    CCSpriteBatchNode *spriteSheet5 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_moregames_button.png"];
-    [self addChild:spriteSheet5];
-    moreGamesButtonFrames = [NSMutableArray array];
+    CCSpriteBatchNode *spriteSheet2 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_endlessmode_button.png"];
+    [self addChild:spriteSheet2];
+    endlessButtonFrames = [NSMutableArray array];
     for(int i = 1; i <= 4; ++i)
     {
-        [moreGamesButtonFrames addObject:
-         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_moregames_button_%d.png", i]]];
+        [endlessButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_endlessmode_button_%d.png", i]]];
     }
     //Initialize with the first frame loaded from the spritesheet
-    CCSprite* button5 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_moregames_button_1.png"];
-    button5.anchorPoint = ccp(.5,.5);
-    button5.position = CGPointMake(windowWidth/2, 40.0f);
+    CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_endlessmode_button_1.png"];
+    button2.anchorPoint = ccp(.5,.5);
+    button2.position = CGPointMake(windowWidth/2, 145.0f);
     //Create an animation from the set of frames you created earlier
-    CCAnimation* flashingButton5 = [CCAnimation animationWithSpriteFrames: moreGamesButtonFrames delay:0.2f];
+    CCAnimation* flashingButton2 = [CCAnimation animationWithSpriteFrames: endlessButtonFrames delay:0.2f];
+    flashingButton2.restoreOriginalFrame = NO;
     //Create an action with the animation that can then be assigned to a sprite
-    moreGamesButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton5]];
-    [button5 runAction:moreGamesButtonAnimation];
-    [self addChild:button5 z:0];
-    [buttons addObject: button5];
+    endlessButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton2]];
+    [button2 runAction:endlessButtonAnimation];
+    [self addChild:button2 z:0];
+    [buttons addObject: button2];
+}
+
+-(void) loadClassicModeButton
+{
+    //Load the plist
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_classicmode_button.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_classicmode_button.png"];
+    [self addChild:spriteSheet];
+    classicButtonFrames = [NSMutableArray array];
+    for(int i = 1; i <= 4; ++i)
+    {
+        [classicButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_classicmode_button_%d.png", i]]];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"mainmenu_classicmode_button_1.png"];
+    button.anchorPoint = ccp(.5,.5);
+    button.position = CGPointMake(windowWidth/2, 180.0f);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation *flashingButton = [CCAnimation animationWithSpriteFrames: classicButtonFrames delay:0.2f];
+    flashingButton.restoreOriginalFrame = NO;
+    //Create an action with the animation that can then be assigned to a sprite
+    classicButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton]];
+    [button runAction:classicButtonAnimation];
+    [self addChild:button z:0];
+    [buttons addObject: button];
+}
+
+-(void) loadBackground
+{
+    //background
+    CCSprite *background;
+    if (windowWidth > 500) {
+        background = [CCSprite spriteWithFile:@"main_menu_screen-iphone5.png"];
+    }
+    else {
+        background = [CCSprite spriteWithFile:@"mainmenu_background.png"];
+    }
     
-    [self schedule:@selector(checkForClicks:)];
+    background.anchorPoint = ccp(.5,.5);
+    background.position = CGPointMake(windowWidth/2, windowHeight/2);
+    [self addChild:background z:-10];
 }
 
 -(void) checkForClicks: (ccTime)dt

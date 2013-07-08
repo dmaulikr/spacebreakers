@@ -2,7 +2,7 @@
 //  GameOverLayer.m
 //
 //  Created by Katie Siegel on 6/8/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. All rights reserved.
 //
 
 #import "GameOverLayer.h"
@@ -23,7 +23,7 @@
 int score;
 int oldLevel;
 
-+(id) scene: (int) pts: (int) level
++(id) scene: (int)pts : (int) level
 {
     score = pts;
     oldLevel = level;
@@ -40,141 +40,11 @@ int oldLevel;
         CGSize screenBound = [[UIScreen mainScreen] bounds].size;
         windowWidth = screenBound.width;
         windowHeight = screenBound.height;
-        //background
-        CCSprite *background;
-        if (windowHeight > 500) {
-            background = [CCSprite spriteWithFile:@"gameover_screen-iphone5.png"];
-        }
-        else {
-            background = [CCSprite spriteWithFile:@"background_gameover.png"];
-        }
-
-        background.anchorPoint = ccp(0,1);
-        background.position = CGPointMake(0, windowWidth);
-        [self addChild:background z:-10];
-        
-        buttons = [NSMutableArray array];
-        
-        //Load the plist
-        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"playagainbutton.plist"];
-        //Load in the spritesheet
-        CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"playagainbutton.png"];
-        [self addChild:spriteSheet];
-        playAgainButtonFrames = [NSMutableArray array];
-        for(int i = 1; i <= 4; ++i)
-        {
-            [playAgainButtonFrames addObject:
-             [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"play_again_%d.png", i]]];
-        }
-        //Initialize with the first frame loaded from the spritesheet
-        CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"play_again_1.png"];
-        button.anchorPoint = ccp(.5,.5);
-        button.position = CGPointMake(windowHeight/2, 180.0f);
-        //Create an animation from the set of frames you created earlier
-        CCAnimation *flashingButton = [CCAnimation animationWithSpriteFrames: playAgainButtonFrames delay:0.2f];
-        flashingButton.restoreOriginalFrame = NO;
-        //Create an action with the animation that can then be assigned to a sprite
-        playAgainButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton]];
-        [button runAction:playAgainButtonAnimation];
-        [self addChild:button z:0];
-        [buttons addObject:button];
-        
-        //Load the plist
-        [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"main_menu_button.plist"];
-        //Load in the spritesheet
-        CCSpriteBatchNode *spriteSheet2 = [CCSpriteBatchNode batchNodeWithFile:@"main_menu_button.png"];
-        [self addChild:spriteSheet2];
-        mainMenuButtonFrames = [NSMutableArray array];
-        for(int i = 1; i <= 4; ++i)
-        {
-            [mainMenuButtonFrames addObject:
-             [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"main_menu_button_%d.png", i]]];
-        }
-        //Initialize with the first frame loaded from the spritesheet
-        CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"main_menu_button_1.png"];
-        button2.anchorPoint = ccp(.5,.5);
-        button2.position = CGPointMake(windowHeight/2, 145.0f);
-        //Create an animation from the set of frames you created earlier
-        CCAnimation* flashingButton2 = [CCAnimation animationWithSpriteFrames: mainMenuButtonFrames delay:0.2f];
-        flashingButton2.restoreOriginalFrame = NO;
-        //Create an action with the animation that can then be assigned to a sprite
-        mainMenuButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton2]];
-        [button2 runAction:mainMenuButtonAnimation];
-        [self addChild:button2 z:0];
-        [buttons addObject: button2];
+        [self loadBackground];
+        [self addButtons];
         
         if (oldLevel == 100) {
-            //Load the plist
-            [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_highscores_button.plist"];
-            //Load in the spritesheet
-            CCSpriteBatchNode *spriteSheet3 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_highscores_button.png"];
-            [self addChild:spriteSheet3];
-            highScoresButtonFrames = [NSMutableArray array];
-            for(int i = 1; i <= 4; ++i)
-            {
-                [highScoresButtonFrames addObject:
-                 [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_highscores_button_%d.png", i]]];
-            }
-            //Initialize with the first frame loaded from the spritesheet
-            CCSprite* button3 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_highscores_button_1.png"];
-            button3.anchorPoint = ccp(.5,.5);
-            button3.position = CGPointMake(windowHeight/2, 110.0f);
-            //Create an animation from the set of frames you created earlier
-            CCAnimation* flashingButton3 = [CCAnimation animationWithSpriteFrames: highScoresButtonFrames delay:0.2f];
-            flashingButton3.restoreOriginalFrame = NO;
-            //Create an action with the animation that can then be assigned to a sprite
-            highScoresButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton3]];
-            [button3 runAction:highScoresButtonAnimation];
-            [self addChild:button3 z:0];
-            [buttons addObject: button3];
-            
-            //score
-            NSString *myScore = [NSString stringWithFormat:@"Final Score: %i",score];
-            CCLabelTTF* scoreLabel = [CCLabelTTF labelWithString:myScore
-                                                        fontName:@"SquareFont"
-                                                        fontSize:24];
-            scoreLabel.anchorPoint = ccp(1,1);
-            scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight - 25.0f);
-            scoreLabel.color = ccWHITE;
-            [self addChild:scoreLabel z:-1];
-            
-            //high score
-            NSNumber *currentHighScore = [[NSUserDefaults standardUserDefaults] objectForKey:@"highScore"];
-            int currHigh = [currentHighScore intValue];
-            if(score > currHigh)
-            {
-                NSNumber *myScore = [NSNumber numberWithInteger:score];
-                [[NSUserDefaults standardUserDefaults] setObject:myScore forKey:@"highScore"];
-                
-                scoreLabel = [CCLabelTTF labelWithString:@"New high score!"
-                                                fontName:@"SquareFont"
-                                                fontSize:18];
-                scoreLabel.anchorPoint = ccp(1,1);
-                scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight-60.0f);
-                scoreLabel.color = ccWHITE;
-                [self addChild:scoreLabel z:-1];
-                
-                NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"playerName"];
-                if(name != nil)
-                {
-                    
-                    [MGWU submitHighScore:score byPlayer:name forLeaderboard:@"endless"];
-
-                }
-                else
-                {
-                    [self promptUserToEnterName];
-                }
-            }
-            else
-            {
-                scoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"Personal Best: %i",currHigh] fontName:@"SquareFont" fontSize:18];
-                scoreLabel.anchorPoint = ccp(1,1);
-                scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight-60.0f);
-                scoreLabel.color = ccWHITE;
-                [self addChild:scoreLabel z:-1];
-            }
-
+            [self configureHighScore];
         }
         
         [self schedule:@selector(checkForClicks:)];
@@ -182,9 +52,157 @@ int oldLevel;
     return self;
 }
 
+-(void) configureHighScore
+{
+    [self loadHighScoreButton];
+    
+    //Update score label
+    NSString *myScore = [NSString stringWithFormat:@"Final Score: %i",score];
+    CCLabelTTF* scoreLabel = [CCLabelTTF labelWithString:myScore
+                                                fontName:@"SquareFont"
+                                                fontSize:24];
+    scoreLabel.anchorPoint = ccp(1,1);
+    scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight - 25.0f);
+    scoreLabel.color = ccWHITE;
+    [self addChild:scoreLabel z:-1];
+    
+    //Update high score if needed and display
+    NSNumber *currentHighScore = [[NSUserDefaults standardUserDefaults] objectForKey:@"highScore"];
+    int currHigh = [currentHighScore intValue];
+    if(score > currHigh)
+    {
+        [self updateHighScore];
+    }
+    else
+    {
+        scoreLabel = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"Personal Best: %i",currHigh] fontName:@"SquareFont" fontSize:18];
+        scoreLabel.anchorPoint = ccp(1,1);
+        scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight-60.0f);
+        scoreLabel.color = ccWHITE;
+        [self addChild:scoreLabel z:-1];
+    }
+}
+
+-(void) updateHighScore
+{
+    NSNumber *myScore = [NSNumber numberWithInteger:score];
+    [[NSUserDefaults standardUserDefaults] setObject:myScore forKey:@"highScore"];
+    
+    CCLabelTTF* scoreLabel = [CCLabelTTF labelWithString:@"New high score!"
+                                    fontName:@"SquareFont"
+                                    fontSize:18];
+    scoreLabel.anchorPoint = ccp(1,1);
+    scoreLabel.position = ccp(windowWidth - 25.0f,windowHeight-60.0f);
+    scoreLabel.color = ccWHITE;
+    [self addChild:scoreLabel z:-1];
+    
+    NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"playerName"];
+    if(name != nil)
+    {
+        [MGWU submitHighScore:score byPlayer:name forLeaderboard:@"endless"];
+    }
+    else
+    {
+        [self promptUserToEnterName];
+    }
+}
+
+-(void) loadHighScoreButton
+{
+    //Load the plist
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"mainmenu_highscores_button.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *spriteSheet3 = [CCSpriteBatchNode batchNodeWithFile:@"mainmenu_highscores_button.png"];
+    [self addChild:spriteSheet3];
+    highScoresButtonFrames = [NSMutableArray array];
+    for(int i = 1; i <= 4; ++i)
+    {
+        [highScoresButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"mainmenu_highscores_button_%d.png", i]]];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    CCSprite* button3 = [CCSprite spriteWithSpriteFrameName:@"mainmenu_highscores_button_1.png"];
+    button3.anchorPoint = ccp(.5,.5);
+    button3.position = CGPointMake(windowHeight/2, 110.0f);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation* flashingButton3 = [CCAnimation animationWithSpriteFrames: highScoresButtonFrames delay:0.2f];
+    flashingButton3.restoreOriginalFrame = NO;
+    //Create an action with the animation that can then be assigned to a sprite
+    highScoresButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton3]];
+    [button3 runAction:highScoresButtonAnimation];
+    [self addChild:button3 z:0];
+    [buttons addObject: button3];
+}
+
+-(void) loadButtons
+{
+    buttons = [NSMutableArray array];
+    //Load the plist
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"playagainbutton.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"playagainbutton.png"];
+    [self addChild:spriteSheet];
+    playAgainButtonFrames = [NSMutableArray array];
+    for(int i = 1; i <= 4; ++i)
+    {
+        [playAgainButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"play_again_%d.png", i]]];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    CCSprite *button = [CCSprite spriteWithSpriteFrameName:@"play_again_1.png"];
+    button.anchorPoint = ccp(.5,.5);
+    button.position = CGPointMake(windowHeight/2, 180.0f);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation *flashingButton = [CCAnimation animationWithSpriteFrames: playAgainButtonFrames delay:0.2f];
+    flashingButton.restoreOriginalFrame = NO;
+    //Create an action with the animation that can then be assigned to a sprite
+    playAgainButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton]];
+    [button runAction:playAgainButtonAnimation];
+    [self addChild:button z:0];
+    [buttons addObject:button];
+    
+    //Load the plist
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"main_menu_button.plist"];
+    //Load in the spritesheet
+    CCSpriteBatchNode *spriteSheet2 = [CCSpriteBatchNode batchNodeWithFile:@"main_menu_button.png"];
+    [self addChild:spriteSheet2];
+    mainMenuButtonFrames = [NSMutableArray array];
+    for(int i = 1; i <= 4; ++i)
+    {
+        [mainMenuButtonFrames addObject:
+         [[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"main_menu_button_%d.png", i]]];
+    }
+    //Initialize with the first frame loaded from the spritesheet
+    CCSprite* button2 = [CCSprite spriteWithSpriteFrameName:@"main_menu_button_1.png"];
+    button2.anchorPoint = ccp(.5,.5);
+    button2.position = CGPointMake(windowHeight/2, 145.0f);
+    //Create an animation from the set of frames you created earlier
+    CCAnimation* flashingButton2 = [CCAnimation animationWithSpriteFrames: mainMenuButtonFrames delay:0.2f];
+    flashingButton2.restoreOriginalFrame = NO;
+    //Create an action with the animation that can then be assigned to a sprite
+    mainMenuButtonAnimation = [CCRepeatForever actionWithAction: [CCAnimate actionWithAnimation:flashingButton2]];
+    [button2 runAction:mainMenuButtonAnimation];
+    [self addChild:button2 z:0];
+    [buttons addObject: button2];
+}
+
+-(void) loadBackground
+{
+    CCSprite *background;
+    if (windowHeight > 500) {
+        background = [CCSprite spriteWithFile:@"gameover_screen-iphone5.png"];
+    }
+    else {
+        background = [CCSprite spriteWithFile:@"background_gameover.png"];
+    }
+    background.anchorPoint = ccp(0,1);
+    background.position = CGPointMake(0, windowWidth);
+    [self addChild:background z:-10];
+}
+
 -(void) promptUserToEnterName
 {
-    UIAlertView *nameAlert = [[UIAlertView alloc] initWithTitle:@"Enter Name" message:@"\n\n" delegate:self 
+    UIAlertView *nameAlert = [[UIAlertView alloc] initWithTitle:@"Enter Name" message:@"\n\n" delegate:self
                                               cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
     
     UIImageView *nameImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"passwordfield" ofType:@"png"]]];

@@ -1,9 +1,9 @@
 //
 //  LevelLayer.h
-//  FirstGame
+//  SpaceBreakers
 //
 //  Created by Katie Siegel on 6/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. All rights reserved.
 //
 
 #import "cocos2d.h"
@@ -14,10 +14,7 @@
 
 @interface LevelLayer : CCLayer <UIAccelerometerDelegate>
 {
-	
-    
-    
-    float windowWidth;
+	float windowWidth;
     float windowHeight;
     
     b2World* world;
@@ -96,6 +93,16 @@
 
 +(LevelLayer*) sharedLevelLayer;
 +(id) scene: (int) levelLayer;
+
+-(void) createBackground;
+-(void) initClassVariables;
+-(void) initPaddleShip;
+-(void) configureClassicModeLevel;
+-(void) preloadSoundEffects;
+-(void) configureTopBar;
+-(void) configureEndlessModeLevel;
+
+
 -(void) changeLevel;
 -(void) updateNumLives;
 -(void) updatePointsLabel;

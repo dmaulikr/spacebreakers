@@ -1,9 +1,9 @@
 //
 //  Paintball.m
-//  FirstGame
+//  SpaceBreakers
 //
 //  Created by Katie Siegel on 6/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012. All rights reserved.
 //
 
 #import "Paintball.h"
@@ -49,24 +49,17 @@
 			ballFrameName = @"green_orb.png";
             code = 0;
 			break;
-		case BallTypeRed: //dangerous balls
-            //			ballFrameName = @"red_orb_frame_1.png";
-            //            code = 1;
-            //            break;
+		case BallTypeRed:
         {
-            
             ballFrameName = @"frame_1.png";
             [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile: @"red_orb_new.plist"];
             CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"red_orb_new.png"];
-            //
             [self.parent addChild:spriteSheet];
             redOrbFrames = [NSMutableArray array];
-            //
             for(int i = 1; i <= 4; ++i)
             {
                 [redOrbFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName: [NSString stringWithFormat:@"frame_%d.png", i]]];
             }
-            //
             
             code = 1;
             break;
